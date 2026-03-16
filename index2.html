@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>E-MITRA PORTAL - Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 230, 118, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 230, 118, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00e676;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 14s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 16s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 13s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 15s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 11s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 17s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 14s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 12s; }
+        .particle:nth-child(10) { left: 15%; animation-delay: 3s; animation-duration: 16s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Login Container */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Robot SVG */
+        .robot-container {
+            margin-bottom: 20px;
+            animation: robotBounce 3s ease-in-out infinite;
+        }
+
+        @keyframes robotBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .robot-svg {
+            width: 120px;
+            height: 120px;
+            filter: drop-shadow(0 0 20px rgba(0, 230, 118, 0.5));
+        }
+
+        /* Robot Eye Blink */
+        .robot-eye {
+            animation: eyeBlink 4s infinite;
+        }
+
+        @keyframes eyeBlink {
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+
+        /* Robot Antenna Glow */
+        .antenna-light {
+            animation: antennaGlow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes antennaGlow {
+            0%, 100% { opacity: 0.3; r: 4; }
+            50% { opacity: 1; r: 6; }
+        }
+
+        /* Login Box */
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+            background: linear-gradient(#000000);
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 35px 30px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(0, 230, 118, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glow Border Animation */
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00e676, transparent, #00e676, transparent);
+            border-radius: 22px;
+            z-index: -1;
+            animation: borderGlow 3s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes borderGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .login-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: 20px;
+            z-index: -1;
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Animated E-MITRA PORTAL Title with Lightning */
+        .animated-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* Animated Lightning Bolt */
+        .lightning {
+            font-size: 38px;
+            animation: lightningFlash 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes lightningFlash {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px #ffeb3b);
+            }
+            25% {
+                opacity: 0.3;
+                transform: scale(0.95);
+                filter: drop-shadow(0 0 0px #ffeb3b);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 15px #ffeb3b) drop-shadow(0 0 30px #ff9800);
+            }
+            75% {
+                opacity: 0.5;
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px #ffeb3b);
+            }
+        }
+
+        /* HRB Letters - NO GLOW, just animation */
+        .hrb-text {
+            display: flex;
+            gap: 3px;
+        }
+
+        .hrb-text .letter {
+            font-size: 42px;
+            font-weight: 800;
+            color: #00e676;
+            display: inline-block;
+            animation: letterBounce 2s ease-in-out infinite;
+        }
+
+        .hrb-text .letter:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .hrb-text .letter:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+        .hrb-text .letter:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes letterBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Typing Tagline */
+        .typing-tagline {
+            color: #666;
+            font-size: 11px;
+            letter-spacing: 2px;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #00e676;
+            animation: typing 3s steps(20) infinite, blink 0.5s step-end infinite;
+            max-width: fit-content;
+            margin: 0 auto;
+        }
+
+        @keyframes typing {
+            0%, 100% { width: 0; }
+            50%, 90% { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Form Styles */
+        .login-form .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .login-form label {
+            display: block;
+            color: #888;
+            font-size: 11px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .login-form input:focus {
+            border-color: #00e676;
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 230, 118, 0.2);
+        }
+
+        .login-form input:focus ~ .icon {
+            opacity: 1;
+        }
+
+        .login-form input::placeholder {
+            color: #444;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00e676 0%, #00c853 100%);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Error Message */
+        .error-msg {
+            background: linear-gradient(135deg, #d50000 0%, #b71c1c 100%);
+            color: #fff;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 22px;
+            height: 22px;
+            border: 3px solid #000;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .login-btn.loading .btn-text { display: none; }
+        .login-btn.loading .spinner { display: inline-block; }
+
+        /* Footer - Simple */
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #444;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .login-footer .powered {
+            color: #555;
+        }
+
+        .login-footer .hrb-name {
+            color: #00e676;
+            font-weight: bold;
+        }
+
+        /* Blackout */
+        .blackout {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .blackout.active {
+            display: flex;
+        }
+
+        .blackout-msg {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .blackout-sub {
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            font-size: 10px;
+            color: #888;
+            z-index: 100;
+        }
+
+        .connection-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00e676;
+            animation: dotPulse 2s infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-grid"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Connection Status -->
+    <div class="connection-status">
+        <div class="connection-dot"></div>
+        <span>Online</span>
+    </div>
+
+    <!-- Black screen overlay for no internet -->
+    <div class="blackout" id="blackout">
+        <div class="blackout-msg">📡 No Internet Connection</div>
+        <div class="blackout-sub">Please connect to internet to continue</div>
+    </div>
+
+    <div class="login-container">
+        <!-- Animated Robot -->
+        <div class="robot-container">
+            <svg class="robot-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Antenna -->
+                <line x1="50" y1="5" x2="50" y2="20" stroke="#00e676" stroke-width="2"/>
+                <circle class="antenna-light" cx="50" cy="5" r="4" fill="#00e676"/>
+                
+                <!-- Head -->
+                <rect x="25" y="20" width="50" height="35" rx="8" fill="#1a1a1a" stroke="#00e676" stroke-width="2"/>
+                
+                <!-- Eyes -->
+                <g class="robot-eye">
+                    <circle cx="38" cy="35" r="6" fill="#0d0d0d"/>
+                    <circle cx="38" cy="35" r="4" fill="#00e676">
+                        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                </g>
+                <g class="robot-eye">
+                    <circle cx="62" cy="35" r="6" fill="#0d0d0d"/>
+                    <circle cx="62" cy="35" r="4" fill="#00e676">
+                        <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                </g>
+                
+                <!-- Mouth/Speaker -->
+                <rect x="35" y="45" width="30" height="5" rx="2" fill="#00e676" opacity="0.5">
+                    <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1s" repeatCount="indefinite"/>
+                </rect>
+                
+                <!-- Neck -->
+                <rect x="45" y="55" width="10" height="8" fill="#333"/>
+                
+                <!-- Body -->
+                <rect x="20" y="63" width="60" height="30" rx="5" fill="#1a1a1a" stroke="#00e676" stroke-width="2"/>
+                
+                <!-- Chest Light -->
+                <circle cx="50" cy="78" r="8" fill="#0d0d0d"/>
+                <circle cx="50" cy="78" r="5" fill="#00e676">
+                    <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                
+                <!-- Arms -->
+                <rect x="5" y="65" width="12" height="20" rx="4" fill="#1a1a1a" stroke="#00e676" stroke-width="1.5">
+                    <animateTransform attributeName="transform" type="rotate" values="0 11 65;5 11 65;0 11 65" dur="2s" repeatCount="indefinite"/>
+                </rect>
+                <rect x="83" y="65" width="12" height="20" rx="4" fill="#1a1a1a" stroke="#00e676" stroke-width="1.5">
+                    <animateTransform attributeName="transform" type="rotate" values="0 89 65;-5 89 65;0 89 65" dur="2s" repeatCount="indefinite"/>
+                </rect>
+                
+                <!-- Power Indicator Lines -->
+                <line x1="30" y1="70" x2="40" y2="70" stroke="#00e676" stroke-width="1" opacity="0.5"/>
+                <line x1="30" y1="73" x2="38" y2="73" stroke="#00e676" stroke-width="1" opacity="0.3"/>
+                <line x1="60" y1="70" x2="70" y2="70" stroke="#00e676" stroke-width="1" opacity="0.5"/>
+                <line x1="62" y1="73" x2="70" y2="73" stroke="#00e676" stroke-width="1" opacity="0.3"/>
+            </svg>
+        </div>
+
+        <div class="login-box">
+            <div class="login-header">
+                <!-- Animated Lightning + HRB Title -->
+                <div class="animated-title">
+                    <span class="lightning">⚡</span>
+                    <div class="hrb-text">
+                        <span class="letter">E-</span>
+                        <span class="letter">MITRA</span>
+                        <span class="letter"></span>
+                    </div>
+                </div>
+                <!-- Typing Tagline -->
+                <div class="typing-tagline">Smart Solutions</div>
+            </div>
+
+            <div class="error-msg" id="errorMsg"></div>
+
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+                        <span class="icon">📧</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                        <span class="icon">🔐</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text">🚀 LOGIN</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <span class="powered">Powered by <span class="hrb-name">E-MITRA PORTAL</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+
+    <!-- Net Guard -->
+    <script src="js/net-guard.js"></script>
+
+    <script>
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Check if already logged in
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                const hasCredits = await checkCredits(user.uid);
+                if (hasCredits) {
+                    window.location.href = 'app.html';
+                } else {
+                    auth.signOut();
+                    showError('Subscription Expired');
+                }
+            }
+        });
+
+        // Handle Login
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            
+            hideError();
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                const hasCredits = await checkCredits(user.uid);
+
+                if (hasCredits) {
+                    window.location.href = 'app.html';
+                } else {
+                    await auth.signOut();
+                    showError('Subscription Expired');
+                }
+
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    showError('Invalid email or password');
+                } else if (error.code === 'auth/too-many-requests') {
+                    showError('Too many attempts. Try later.');
+                } else if (error.code === 'auth/network-request-failed') {
+                    showError('Network error. Check internet.');
+                } else {
+                    showError('Login failed. Try again.');
+                }
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        // Check if user has credits
+        async function checkCredits(uid) {
+            try {
+                const doc = await db.collection('users').doc(uid).get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    return data.credits > 0;
+                }
+                
+                return false;
+            } catch (error) {
+                console.error('Credit check error:', error);
+                return false;
+            }
+        }
+
+        // Show error message
+        function showError(msg) {
+            const errorDiv = document.getElementById('errorMsg');
+            errorDiv.textContent = '❌ ' + msg;
+            errorDiv.classList.add('show');
+        }
+
+        // Hide error message
+        function hideError() {
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        // Update connection status
+        window.addEventListener('online', () => {
+            document.querySelector('.connection-dot').style.background = '#00e676';
+            document.querySelector('.connection-status span').textContent = 'Online';
+        });
+
+        window.addEventListener('offline', () => {
+            document.querySelector('.connection-dot').style.background = '#d50000';
+            document.querySelector('.connection-status span').textContent = 'Offline';
+        });
+
+        // Initialize net guard
+        initNetGuard();
+    </script>
+</body>
+</html>

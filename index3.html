@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>E-MITRA | Smart Meter Reading Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #1e293b;
+            min-height: 100vh;
+            transition: background-color 0.3s;
+        }
+
+        /* Login Page Styles */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            background: #ffffff;
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 176, 255, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 230, 118, 0.03) 0%, transparent 25%);
+            z-index: 0;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(135deg, #00b0ff, #2979ff);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite;
+        }
+
+        .particle:nth-child(1) { left: 15%; top: 20%; animation-duration: 18s; }
+        .particle:nth-child(2) { left: 85%; top: 70%; animation-duration: 22s; width: 8px; height: 8px; }
+        .particle:nth-child(3) { left: 30%; top: 90%; animation-duration: 25s; }
+        .particle:nth-child(4) { left: 70%; top: 15%; animation-duration: 20s; width: 10px; height: 10px; }
+        .particle:nth-child(5) { left: 45%; top: 40%; animation-duration: 23s; }
+        .particle:nth-child(6) { left: 90%; top: 30%; animation-duration: 19s; }
+        .particle:nth-child(7) { left: 10%; top: 80%; animation-duration: 21s; }
+        .particle:nth-child(8) { left: 60%; top: 60%; animation-duration: 24s; width: 7px; height: 7px; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+            25% { transform: translate(30px, -20px) scale(1.1); opacity: 0.15; }
+            50% { transform: translate(50px, 20px) scale(0.9); opacity: 0.08; }
+            75% { transform: translate(-20px, 40px) scale(1.2); opacity: 0.12; }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .robot-container {
+            margin-bottom: 24px;
+            animation: floatIcon 4s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.02); }
+        }
+
+        .robot-svg {
+            width: 96px;
+            height: 96px;
+            filter: drop-shadow(0 10px 20px rgba(0, 176, 255, 0.15));
+        }
+
+        .robot-head { fill: white; stroke: #e2e8f0; stroke-width: 2; }
+        .robot-eye { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.5; }
+        .robot-pupil { fill: #00b0ff; animation: blink 4s infinite; }
+        @keyframes blink { 0%,45%,55%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.1); } }
+        .robot-antenna { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 4; }
+        .antenna-ball { fill: #00b0ff; animation: glow 2s infinite; }
+        @keyframes glow { 0%,100% { opacity: 0.6; r: 4; } 50% { opacity: 1; r: 5; } }
+        .robot-body { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 2; }
+        .robot-heart { fill: #ff3b5c; animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat { 0%,100% { transform: scale(1); opacity: 0.8; } 30% { transform: scale(1.1); opacity: 1; } }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 40px 36px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08),
+                        0 0 0 1px rgba(0, 176, 255, 0.1) inset;
+            transition: all 0.3s;
+        }
+
+        .login-card:hover {
+            box-shadow: 0 30px 50px -15px rgba(0, 176, 255, 0.15),
+                        0 0 0 1px rgba(0, 176, 255, 0.2) inset;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .title-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .title-icon { font-size: 36px; animation: subtleFlash 3s infinite; }
+        @keyframes subtleFlash { 0%,100% { opacity: 0.9; } 50% { opacity: 1; filter: drop-shadow(0 0 10px #00b0ff); } }
+        .title-text { font-size: 38px; font-weight: 800; background: linear-gradient(135deg, #1e293b, #334155); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title-highlight { font-size: 38px; font-weight: 800; background: linear-gradient(135deg, #00b0ff, #2979ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .subtitle-line { width: 30px; height: 2px; background: linear-gradient(90deg, transparent, #00b0ff, transparent); }
+
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; color: #475569; font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+        .input-wrapper { position: relative; }
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: #94a3b8;
+            transition: all 0.3s;
+            z-index: 1;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 16px 16px 16px 52px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            color: #1e293b;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .login-form input:focus {
+            border-color: #00b0ff;
+            outline: none;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 176, 255, 0.1);
+        }
+
+        .login-form input:focus + .input-icon { color: #00b0ff; }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00b0ff, #2979ff);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 176, 255, 0.4);
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before { left: 100%; }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px #00b0ff; }
+        .login-btn.loading { position: relative; color: transparent; }
+        .login-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            margin: -12px 0 0 -12px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s;
+        }
+        .error-msg.show { display: flex; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 28px;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .login-footer .brand { color: #00b0ff; font-weight: 700; position: relative; }
+        .login-footer .brand::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00b0ff, transparent);
+        }
+
+        /* Dashboard Styles */
+        .dashboard-page {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .dashboard-page.active {
+            display: block;
+        }
+
+        .dashboard { max-width: 1200px; margin: 0 auto; }
+
+        .top-bar {
+            background: rgba(18, 25, 38, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #1e2a3a;
+            border-radius: 20px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, #00b0ff, #2979ff);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-icon i { font-size: 24px; color: white; }
+        .logo-text h1 { font-size: 24px; font-weight: 700; color: white; letter-spacing: -0.5px; }
+        .logo-text span { font-size: 12px; color: #5f7d9e; }
+
+        .credits-card {
+            background: rgba(0, 176, 255, 0.1);
+            border: 1px solid rgba(0, 176, 255, 0.2);
+            border-radius: 60px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .credit-item { display: flex; align-items: center; gap: 10px; }
+        .credit-item i { font-size: 20px; color: #00b0ff; }
+        .credit-info { text-align: right; }
+        .credit-label { font-size: 11px; color: #5f7d9e; text-transform: uppercase; letter-spacing: 0.5px; }
+        .credit-value { font-size: 18px; font-weight: 700; color: white; }
+        .credit-value.low { color: #ff9800; }
+        .credit-value.critical { color: #d50000; }
+
+        .logout-btn {
+            background: rgba(213, 0, 0, 0.1);
+            border: 1px solid rgba(213, 0, 0, 0.3);
+            color: #ff6b6b;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        .logout-btn:hover { background: rgba(213, 0, 0, 0.2); border-color: #d50000; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        @media (max-width: 768px) { .main-grid { grid-template-columns: 1fr; } }
+
+        .card {
+            background: rgba(18, 25, 38, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #1e2a3a;
+            border-radius: 24px;
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-header h3 i { color: #00b0ff; font-size: 20px; }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-badge.success { background: rgba(0, 230, 118, 0.1); color: #00e676; border: 1px solid rgba(0, 230, 118, 0.2); }
+        .status-badge.warning { background: rgba(255, 152, 0, 0.1); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.2); }
+        .status-badge.error { background: rgba(213, 0, 0, 0.1); color: #ff6b6b; border: 1px solid rgba(213, 0, 0, 0.2); }
+
+        .usb-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+        .usb-info { display: flex; align-items: center; gap: 12px; }
+        .usb-icon {
+            width: 48px; height: 48px;
+            background: rgba(0, 176, 255, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .usb-icon i { font-size: 24px; color: #00b0ff; }
+        .usb-details h4 { font-size: 16px; font-weight: 600; color: white; margin-bottom: 4px; }
+        .usb-details p { font-size: 12px; color: #5f7d9e; }
+        .usb-signal { font-size: 12px; font-weight: 600; padding: 6px 12px; background: rgba(0, 176, 255, 0.1); border-radius: 40px; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #5f7d9e;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(12, 20, 30, 0.8);
+            border: 1.5px solid #1e2a3a;
+            border-radius: 14px;
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #00b0ff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 176, 255, 0.1);
+        }
+        .form-control:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .btn {
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00b0ff, #2979ff);
+            color: white;
+            box-shadow: 0 10px 20px -8px rgba(0, 176, 255, 0.4);
+        }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 25px -8px #00b0ff; }
+        .btn-primary.connected { background: #00796b; }
+        .btn-primary.reconnecting { background: #ff9800; animation: pulse 1s infinite; }
+        .btn-secondary {
+            background: rgba(0, 176, 255, 0.1);
+            color: #00b0ff;
+            border: 1.5px solid rgba(0, 176, 255, 0.3);
+        }
+        .btn-secondary:hover:not(:disabled) { background: rgba(0, 176, 255, 0.15); border-color: #00b0ff; }
+        .btn-secondary.running { background: #d50000; color: white; border-color: #d50000; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .server-status {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .server-status-left { display: flex; align-items: center; gap: 12px; }
+        .server-dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: #666;
+        }
+        .server-dot.running { background: #00e676; box-shadow: 0 0 12px #00e676; }
+        .server-text { font-size: 14px; color: white; }
+        .server-badge { padding: 6px 12px; border-radius: 40px; font-size: 12px; font-weight: 600; }
+
+        .log-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #1e2a3a;
+            border-radius: 16px;
+            padding: 20px;
+            height: 250px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+        .log-entry { padding: 8px 0; border-bottom: 1px solid #1e2a3a; color: #94a3b8; }
+        .log-entry:last-child { border-bottom: none; }
+        .log-time { color: #3b4b64; margin-right: 12px; }
+        .log-entry.success { color: #00e676; }
+        .log-entry.warning { color: #ff9800; }
+        .log-entry.error { color: #ff6b6b; }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(18, 25, 38, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #00b0ff;
+            border-radius: 60px;
+            padding: 14px 28px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px -10px #00b0ff;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.error { border-color: #d50000; box-shadow: 0 10px 30px -10px #d50000; }
+        .toast.warning { border-color: #ff9800; box-shadow: 0 10px 30px -10px #ff9800; }
+
+        .blackout {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .blackout.active { display: flex; }
+        .blackout i { font-size: 64px; color: #d50000; margin-bottom: 20px; animation: pulse 2s infinite; }
+        .blackout h2 { color: white; font-size: 24px; margin-bottom: 8px; }
+        .blackout p { color: #5f7d9e; font-size: 14px; }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: white;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            transition: background 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Common Elements -->
+    <div class="blackout" id="blackout">
+        <i class="fas fa-wifi"></i>
+        <h2>No Internet Connection</h2>
+        <p>Please check your network and try again</p>
+    </div>
+    
+    <div class="toast" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">Message</span>
+    </div>
+
+    <div class="connection-status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Online</span>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="bg-pattern"></div>
+        <div class="particles">
+            <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+            <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+            <div class="particle"></div><div class="particle"></div>
+        </div>
+
+        <div class="login-container">
+            <div class="robot-container">
+                <svg class="robot-svg" viewBox="0 0 100 100" fill="none">
+                    <line x1="50" y1="10" x2="50" y2="22" class="robot-antenna"/>
+                    <circle class="antenna-ball" cx="50" cy="8" r="4" fill="#00b0ff"/>
+                    <rect x="30" y="22" width="40" height="32" rx="10" class="robot-head"/>
+                    <circle cx="40" cy="36" r="5" class="robot-eye"/>
+                    <circle cx="40" cy="36" r="3" class="robot-pupil"/>
+                    <circle cx="60" cy="36" r="5" class="robot-eye"/>
+                    <circle cx="60" cy="36" r="3" class="robot-pupil"/>
+                    <path d="M40 48 Q50 54, 60 48" stroke="#00b0ff" stroke-width="2" fill="none"/>
+                    <rect x="45" y="54" width="10" height="6" fill="#e2e8f0" rx="2"/>
+                    <rect x="25" y="60" width="50" height="25" rx="8" class="robot-body"/>
+                    <path d="M50 70 L54 66 Q60 60, 66 66 Q72 72, 66 78 L50 94 L34 78 Q28 72, 34 66 Q40 60, 46 66 L50 70" fill="#ff3b5c" class="robot-heart"/>
+                    <rect x="15" y="62" width="8" height="18" rx="4" fill="#e2e8f0" transform="rotate(-5 19 62)"/>
+                    <rect x="77" y="62" width="8" height="18" rx="4" fill="#e2e8f0" transform="rotate(5 81 62)"/>
+                </svg>
+            </div>
+
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="title-wrapper">
+                        <span class="title-icon">⚡</span>
+                        <div>
+                            <span class="title-text">E-</span>
+                            <span class="title-highlight">MITRA</span>
+                        </div>
+                    </div>
+                    <div class="subtitle">
+                        <span class="subtitle-line"></span>
+                        Smart Solutions Portal
+                        <span class="subtitle-line"></span>
+                    </div>
+                </div>
+
+                <div class="error-msg" id="errorMsg">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="errorText">Invalid credentials</span>
+                </div>
+
+                <form class="login-form" id="loginForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                            <span class="input-icon">📧</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" placeholder="Enter your password" required>
+                            <span class="input-icon">🔒</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">Sign In</button>
+                </form>
+
+                <div class="login-footer">
+                    <span>Powered by <span class="brand">E-MITRA PORTAL</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboardPage" class="dashboard-page">
+        <div class="dashboard">
+            <div class="top-bar">
+                <div class="logo-area">
+                    <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="logo-text">
+                        <h1>E-MITRA</h1>
+                        <span>Meter Reading Dashboard</span>
+                    </div>
+                </div>
+                <div class="credits-card">
+                    <div class="credit-item">
+                        <i class="fas fa-coins"></i>
+                        <div class="credit-info">
+                            <div class="credit-label">Total Credits</div>
+                            <div class="credit-value" id="totalCredits">--</div>
+                        </div>
+                    </div>
+                    <div class="credit-item">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="credit-info">
+                            <div class="credit-label">Daily Usage</div>
+                            <div class="credit-value" id="dailyUsage">--/--</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <div class="main-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-usb"></i> USB Connection</h3>
+                        <span class="status-badge" id="usbStatus">Disconnected</span>
+                    </div>
+                    <div class="usb-status">
+                        <div class="usb-info">
+                            <div class="usb-icon"><i class="fas fa-microchip"></i></div>
+                            <div class="usb-details">
+                                <h4 id="usbTitle">Not Connected</h4>
+                                <p id="usbSub">Connect USB cable to begin</p>
+                            </div>
+                        </div>
+                        <div class="usb-signal" id="usbSignal"></div>
+                    </div>
+                    <div class="card-header" style="margin-top:24px;">
+                        <h3><i class="fas fa-server"></i> Server Status</h3>
+                    </div>
+                    <div class="server-status">
+                        <div class="server-status-left">
+                            <div class="server-dot" id="serverDot"></div>
+                            <span class="server-text" id="serverText">Server Stopped</span>
+                        </div>
+                        <span class="server-badge" id="serverBadge">Inactive</span>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn" id="usbBtn" onclick="toggleUsb()">
+                            <i class="fas fa-plug"></i><span>Connect USB</span>
+                        </button>
+                        <button class="btn" id="serverBtn" onclick="toggleServer()" disabled>
+                            <i class="fas fa-play"></i><span>Start Server</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-sliders-h"></i> Meter Configuration</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Meter Profile</label>
+                        <select class="form-control" id="meterSelect">
+                            <option value="avon">Avon Single Phase</option>
+                            <option value="avon2">Avon 2 (New Model)</option>
+                            <option value="genus">Genus Three Phase</option>
+                            <option value="mt">MT Three Phase</option>
+                            <option value="hpl">HPL Single Phase</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Meter Serial Number</label>
+                        <input type="text" class="form-control" id="val_serial" value="73300141">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Current kWh</label>
+                            <input type="number" class="form-control" id="val_kwh" value="1234.5" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Current kVAh</label>
+                            <input type="number" class="form-control" id="val_kvah" value="1300.0" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>MD (kW)</label>
+                            <input type="number" class="form-control" id="val_md_kw" value="5.5" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>MD (kVA)</label>
+                            <input type="number" class="form-control" id="val_md_kva" value="5.8" step="0.1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-terminal"></i> Activity Log</h3>
+                    <button class="status-badge" onclick="clearLogs()" style="cursor:pointer;">
+                        <i class="fas fa-eraser"></i> Clear
+                    </button>
+                </div>
+                <div class="log-box" id="logBox">
+                    <div class="log-entry">
+                        <span class="log-time">[--:--:--]</span> System Ready. Connect USB to begin.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // ==================== FIREBASE CONFIGURATION ====================
+        // Replace with your Firebase config
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // ==================== GLOBAL VARIABLES ====================
+        let currentUser = null;
+        let userCredits = 0;
+        let dailyLimit = 40;
+        let dailyUsed = 0;
+        let lastResetDate = "";
+        let creditDeductedThisSession = false;
+        let isUsbConnected = false;
+        let isServerRunning = false;
+        let isReconnecting = false;
+        let reconnectAttempts = 0;
+        const MAX_RECONNECT_ATTEMPTS = 5;
+        let lastDataTime = 0;
+        let usbHealthInterval = null;
+
+        // ==================== PAGE MANAGEMENT ====================
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').classList.remove('active');
+        }
+
+        function showDashboardPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').classList.add('active');
+        }
+
+        // ==================== AUTH STATE ====================
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                showLoginPage();
+                return;
+            }
+
+            currentUser = user;
+            console.log("User logged in:", user.uid);
+
+            try {
+                const doc = await db.collection('users').doc(user.uid).get();
+                
+                if (!doc.exists) {
+                    await db.collection('users').doc(user.uid).set({
+                        blocked: false,
+                        credits: 100,
+                        dailyLimit: 40,
+                        dailyUsed: 0,
+                        lastResetDate: new Date().toISOString().split('T')[0]
+                    });
+                    
+                    const newDoc = await db.collection('users').doc(user.uid).get();
+                    const data = newDoc.data();
+                    userCredits = data.credits;
+                    dailyLimit = data.dailyLimit;
+                    dailyUsed = data.dailyUsed;
+                    lastResetDate = data.lastResetDate;
+                } else {
+                    const data = doc.data();
+                    
+                    if (data.blocked === true) {
+                        console.log("User is BLOCKED");
+                        await auth.signOut();
+                        showError('Account Blocked');
+                        showLoginPage();
+                        return;
+                    }
+                    
+                    userCredits = data.credits || 0;
+                    
+                    if (userCredits <= 0) {
+                        console.log("Credits exhausted");
+                        await auth.signOut();
+                        showError('Credits Exhausted');
+                        showLoginPage();
+                        return;
+                    }
+                    
+                    dailyLimit = data.dailyLimit || 40;
+                    dailyUsed = data.dailyUsed || 0;
+                    lastResetDate = data.lastResetDate || "";
+                }
+
+                const today = new Date().toISOString().split('T')[0];
+                if (lastResetDate !== today) {
+                    dailyUsed = 0;
+                    lastResetDate = today;
+                    await db.collection('users').doc(user.uid).update({
+                        dailyUsed: 0,
+                        lastResetDate: today
+                    });
+                }
+                
+                showDashboardPage();
+                updateCreditsDisplay();
+                log('User authenticated successfully', 'success');
+
+            } catch (error) {
+                console.error("Auth check error:", error);
+                showToast("Error loading user data", "error");
+            }
+        });
+
+        // ==================== LOGIN HANDLER ====================
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            
+            hideError();
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                // Auth state will handle navigation
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    showError('Invalid email or password');
+                } else if (error.code === 'auth/too-many-requests') {
+                    showError('Too many attempts. Try later.');
+                } else if (error.code === 'auth/network-request-failed') {
+                    showError('Network error. Check internet.');
+                } else {
+                    showError('Login failed. Try again.');
+                }
+                
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('errorMsg');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = msg;
+            errorDiv.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        // ==================== DASHBOARD FUNCTIONS ====================
+        function updateCreditsDisplay() {
+            const totalEl = document.getElementById('totalCredits');
+            const dailyEl = document.getElementById('dailyUsage');
+            totalEl.textContent = userCredits;
+            totalEl.className = 'credit-value';
+            if (userCredits <= 10) totalEl.classList.add('critical');
+            else if (userCredits <= 50) totalEl.classList.add('low');
+            dailyEl.textContent = `${dailyUsed}/${dailyLimit}`;
+        }
+
+        function canUseCredit() {
+            if (userCredits <= 0) return { allowed: false, reason: "Credits exhausted" };
+            if (dailyUsed >= dailyLimit) return { allowed: false, reason: "Daily limit reached" };
+            return { allowed: true };
+        }
+
+        async function deductCredit() {
+            if (!currentUser || creditDeductedThisSession) return false;
+            const check = canUseCredit();
+            if (!check.allowed) {
+                showToast(check.reason, 'error');
+                log(check.reason, 'error');
+                if (check.reason === "Credits exhausted") {
+                    setTimeout(async () => {
+                        await auth.signOut();
+                    }, 2000);
+                }
+                return false;
+            }
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                await db.collection('users').doc(currentUser.uid).update({
+                    credits: firebase.firestore.FieldValue.increment(-1),
+                    dailyUsed: firebase.firestore.FieldValue.increment(1),
+                    lastResetDate: today
+                });
+                userCredits--;
+                dailyUsed++;
+                updateCreditsDisplay();
+                creditDeductedThisSession = true;
+                showToast(`Credit used - ${dailyUsed}/${dailyLimit}`, 'success');
+                log(`💳 Credit deducted | Today: ${dailyUsed}/${dailyLimit}`, 'success');
+                if (userCredits <= 0) {
+                    log('Credits exhausted! Logging out...', 'error');
+                    setTimeout(async () => {
+                        await auth.signOut();
+                    }, 2000);
+                }
+                return true;
+            } catch (error) {
+                console.error('Credit deduction error:', error);
+                return false;
+            }
+        }
+
+        function toggleUsb() {
+            if (isReconnecting) {
+                log('Reconnection in progress...', 'warning');
+                return;
+            }
+            if (isUsbConnected) disconnectUsb();
+            else connectUsb();
+        }
+
+        function connectUsb() {
+            log('Connecting USB...', 'info');
+            updateUsbStatus('connecting');
+            try {
+                if (typeof Android !== 'undefined' && Android.connectUSB) {
+                    Android.connectUSB();
+                } else {
+                    // Simulate for web testing
+                    setTimeout(() => {
+                        onConnected();
+                    }, 1500);
+                }
+            } catch (e) {
+                log('USB connection failed', 'error');
+                updateUsbStatus('disconnected');
+            }
+        }
+
+        function disconnectUsb() {
+            if (isServerRunning) stopServer();
+            if (usbHealthInterval) {
+                clearInterval(usbHealthInterval);
+                usbHealthInterval = null;
+            }
+            try {
+                if (typeof Android !== 'undefined' && Android.disconnect) {
+                    Android.disconnect();
+                }
+            } catch (e) { }
+            isUsbConnected = false;
+            isReconnecting = false;
+            reconnectAttempts = 0;
+            updateUsbStatus('disconnected');
+            updateServerButton();
+            log('USB Disconnected', 'warning');
+        }
+
+        function updateUsbStatus(status) {
+            const usbStatus = document.getElementById('usbStatus');
+            const usbTitle = document.getElementById('usbTitle');
+            const usbSub = document.getElementById('usbSub');
+            const usbSignal = document.getElementById('usbSignal');
+            const usbBtn = document.getElementById('usbBtn');
+            
+            usbStatus.classList.remove('success', 'warning', 'error');
+            usbBtn.classList.remove('connected', 'reconnecting');
+            
+            switch (status) {
+                case 'connected':
+                    usbStatus.className = 'status-badge success';
+                    usbStatus.innerHTML = '<i class="fas fa-check-circle"></i> Connected';
+                    usbTitle.textContent = 'USB Connected';
+                    usbSub.textContent = 'CH340 Serial • 9600 baud';
+                    usbSignal.innerHTML = '<i class="fas fa-signal"></i> Strong';
+                    usbBtn.className = 'btn connected';
+                    usbBtn.innerHTML = '<i class="fas fa-plug"></i><span>Disconnect USB</span>';
+                    break;
+                case 'reconnecting':
+                    usbStatus.className = 'status-badge warning';
+                    usbStatus.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Reconnecting';
+                    usbTitle.textContent = 'Reconnecting...';
+                    usbSub.textContent = `Attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}`;
+                    usbSignal.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Weak';
+                    usbBtn.className = 'btn reconnecting';
+                    usbBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><span>Reconnecting...</span>';
+                    break;
+                case 'connecting':
+                    usbStatus.className = 'status-badge warning';
+                    usbStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting';
+                    usbTitle.textContent = 'Connecting...';
+                    usbSub.textContent = 'Please wait';
+                    usbSignal.innerHTML = '';
+                    usbBtn.className = 'btn';
+                    usbBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Connecting...</span>';
+                    break;
+                default:
+                    usbStatus.className = 'status-badge error';
+                    usbStatus.innerHTML = '<i class="fas fa-times-circle"></i> Disconnected';
+                    usbTitle.textContent = 'Not Connected';
+                    usbSub.textContent = 'Connect USB cable to begin';
+                    usbSignal.innerHTML = '';
+                    usbBtn.className = 'btn';
+                    usbBtn.innerHTML = '<i class="fas fa-plug"></i><span>Connect USB</span>';
+            }
+        }
+
+        function toggleServer() {
+            if (!isUsbConnected) {
+                showToast('Connect USB first!', 'warning');
+                log('Connect USB first!', 'warning');
+                return;
+            }
+            if (isServerRunning) stopServer();
+            else startServer();
+        }
+
+        function startServer() {
+            const check = canUseCredit();
+            if (!check.allowed) {
+                showToast(check.reason, 'error');
+                log(check.reason, 'error');
+                return;
+            }
+            creditDeductedThisSession = false;
+            isServerRunning = true;
+            const serverDot = document.getElementById('serverDot');
+            const serverText = document.getElementById('serverText');
+            const serverBadge = document.getElementById('serverBadge');
+            const serverBtn = document.getElementById('serverBtn');
+            
+            serverDot.classList.add('running');
+            serverText.textContent = 'Server Running';
+            serverBadge.textContent = 'Active';
+            serverBadge.style.background = 'rgba(0,230,118,0.1)';
+            serverBadge.style.color = '#00e676';
+            serverBtn.className = 'btn btn-secondary running';
+            serverBtn.innerHTML = '<i class="fas fa-stop"></i><span>Stop Server</span>';
+            
+            document.querySelectorAll('#meterSelect,#val_serial,#val_kwh,#val_kvah,#val_md_kw,#val_md_kva').forEach(el => el.disabled = true);
+            startUsbHealthCheck();
+            log('Server Started - Ready for reading', 'success');
+        }
+
+        function stopServer() {
+            isServerRunning = false;
+            creditDeductedThisSession = false;
+            const serverDot = document.getElementById('serverDot');
+            const serverText = document.getElementById('serverText');
+            const serverBadge = document.getElementById('serverBadge');
+            const serverBtn = document.getElementById('serverBtn');
+            
+            serverDot.classList.remove('running');
+            serverText.textContent = 'Server Stopped';
+            serverBadge.textContent = 'Inactive';
+            serverBadge.style.background = 'rgba(255,255,255,0.1)';
+            serverBadge.style.color = '#94a3b8';
+            serverBtn.className = 'btn btn-secondary';
+            serverBtn.innerHTML = '<i class="fas fa-play"></i><span>Start Server</span>';
+            
+            document.querySelectorAll('#meterSelect,#val_serial,#val_kwh,#val_kvah,#val_md_kw,#val_md_kva').forEach(el => el.disabled = false);
+            if (usbHealthInterval) {
+                clearInterval(usbHealthInterval);
+                usbHealthInterval = null;
+            }
+            log('Server Stopped', 'warning');
+        }
+
+        function updateServerButton() {
+            document.getElementById('serverBtn').disabled = !isUsbConnected;
+        }
+
+        function startUsbHealthCheck() {
+            if (usbHealthInterval) clearInterval(usbHealthInterval);
+            lastDataTime = Date.now();
+            usbHealthInterval = setInterval(() => {
+                if (!isServerRunning) return;
+                const timeSinceData = Date.now() - lastDataTime;
+                const signal = document.getElementById('usbSignal');
+                if (timeSinceData < 5000) signal.innerHTML = '<i class="fas fa-signal"></i> Active';
+                else if (timeSinceData < 15000) signal.innerHTML = '<i class="fas fa-pause"></i> Idle';
+                else signal.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Waiting';
+            }, 2000);
+        }
+
+        function onConnected() {
+            isUsbConnected = true;
+            isReconnecting = false;
+            reconnectAttempts = 0;
+            updateUsbStatus('connected');
+            updateServerButton();
+            log('USB Connected Successfully', 'success');
+            try {
+                if (typeof Android !== 'undefined' && Android.vibrate) {
+                    Android.vibrate(100);
+                }
+            } catch (e) { }
+        }
+
+        function onUsbAttached() {
+            log('USB Cable Detected', 'info');
+            showToast('USB Detected', 'success');
+            setTimeout(() => {
+                if (!isUsbConnected) connectUsb();
+            }, 500);
+        }
+
+        function onUsbDetached() {
+            log('USB Cable Disconnected!', 'error');
+            showToast('USB Disconnected!', 'error');
+            isUsbConnected = false;
+            if (isServerRunning) stopServer();
+            updateUsbStatus('disconnected');
+            updateServerButton();
+            try {
+                if (typeof Android !== 'undefined' && Android.vibrate) {
+                    Android.vibrate(200);
+                }
+            } catch (e) { }
+        }
+
+        function onUsbError(error) {
+            log(`USB Error: ${error}`, 'error');
+            if (isUsbConnected && !isReconnecting) {
+                isUsbConnected = false;
+                // Attempt reconnection logic
+            }
+        }
+
+        function onDataReceived(hexData) {
+            if (!isServerRunning) return;
+            lastDataTime = Date.now();
+            // Check for specific pattern to deduct credit
+            if (hexData.includes("0201020204") && !creditDeductedThisSession) {
+                deductCredit();
+            }
+        }
+
+        function log(message, type = '') {
+            const box = document.getElementById('logBox');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+            box.appendChild(entry);
+            box.scrollTop = box.scrollHeight;
+            while (box.children.length > 100) box.removeChild(box.firstChild);
+        }
+
+        function clearLogs() {
+            document.getElementById('logBox').innerHTML = '';
+            log('Logs cleared', 'info');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            toast.classList.remove('error', 'warning');
+            if (type === 'error') toast.classList.add('error');
+            if (type === 'warning') toast.classList.add('warning');
+            toastMsg.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        async function logout() {
+            if (isServerRunning) stopServer();
+            if (isUsbConnected) disconnectUsb();
+            try {
+                await auth.signOut();
+                showLoginPage();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // ==================== NETWORK STATUS ====================
+        function updateConnectionStatus() {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            const blackout = document.getElementById('blackout');
+            
+            if (navigator.onLine) {
+                dot.style.background = '#10b981';
+                text.textContent = 'Online';
+                blackout.classList.remove('active');
+            } else {
+                dot.style.background = '#ef4444';
+                text.textContent = 'Offline';
+                blackout.classList.add('active');
+            }
+        }
+
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        updateConnectionStatus();
+
+        // Make functions global for onclick handlers
+        window.toggleUsb = toggleUsb;
+        window.toggleServer = toggleServer;
+        window.clearLogs = clearLogs;
+        window.logout = logout;
+        window.onConnected = onConnected;
+        window.onUsbAttached = onUsbAttached;
+        window.onUsbDetached = onUsbDetached;
+        window.onUsbError = onUsbError;
+        window.onDataReceived = onDataReceived;
+    </script>
+</body>
+</html>
